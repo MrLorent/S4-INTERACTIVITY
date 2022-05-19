@@ -28,6 +28,6 @@ function Map() {
     id="dgfip_facilities_access"
     mapboxApiAccessToken={IDS.mapbox_token}
     width={window.innerWidth}
-    height={window.innerHeight}
+    height={window.innerHeight - 60}
     />
 }
