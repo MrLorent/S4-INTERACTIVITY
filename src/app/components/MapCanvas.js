@@ -24,5 +24,10 @@ export default function MapCanvas() {
 }
 
 function Map() {
-  return <KeplerGl id="dgfip_facilities_access" mapboxApiAccessToken={IDS.mapbox_token}/>
+  return <KeplerGl
+    id="dgfip_facilities_access"
+    mapboxApiAccessToken={IDS.mapbox_token}
+    width={window.innerWidth}
+    height={window.innerHeight}
+    />
 }
