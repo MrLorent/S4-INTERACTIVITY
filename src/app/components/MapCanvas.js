@@ -1,11 +1,13 @@
 import './MapCanvas.css'
 
-import keplerGl from 'kepler.gl';
+import KeplerGl from 'kepler.gl';
 import {addDataToMap} from 'kepler.gl/actions';
 import {keplerGlReducer} from 'kepler.gl/reducers';
 import {taskMiddleware} from 'react-palm/tasks';
 import {Provider, useDispatch} from 'react-redux';
 import {applyMiddleware, combineReducers, createStore} from 'redux';
+
+import IDS from '../../ids.js';
 
 const reducers = combineReducers({
   keplerGl: keplerGlReducer,
@@ -22,5 +24,5 @@ export default function MapCanvas() {
 }
 
 function Map() {
-  return <div>I'm the map</div>
+  return <KeplerGl id="dgfip_facilities_access" mapboxApiAccessToken={IDS.mapbox_token}/>
 }
