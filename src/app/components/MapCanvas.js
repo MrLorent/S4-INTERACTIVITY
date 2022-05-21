@@ -11,8 +11,15 @@ import useSwr from 'swr';
 
 import IDS from '../../ids.js';
 
+const customKeplerReducer = keplerGlReducer.initialState({
+  uiState: {
+    activeSidePanel: null,
+    currentModal: null,
+  }
+});
+
 const reducers = combineReducers({
-  keplerGl: keplerGlReducer,
+  keplerGl: customKeplerReducer,
 });
 
 const store = createStore(reducers, {}, applyMiddleware(taskMiddleware));
