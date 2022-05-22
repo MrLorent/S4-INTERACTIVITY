@@ -2,6 +2,7 @@ import './MapCanvas.css'
 
 import KeplerGl from 'kepler.gl';
 import {addDataToMap} from 'kepler.gl/actions';
+import {KeplerGlSchema} from 'kepler.gl/dist/schemas';
 import {keplerGlReducer} from 'kepler.gl/reducers';
 import React from 'react';
 import {taskMiddleware} from 'react-palm/tasks';
@@ -10,6 +11,7 @@ import {applyMiddleware, combineReducers, createStore} from 'redux';
 import useSwr from 'swr';
 
 import IDS from '../../ids.js';
+import layer_config from '../kepler_configs/layer_config.js';
 
 const customKeplerReducer = keplerGlReducer.initialState({
   uiState: {
@@ -35,17 +37,121 @@ export default function MapCanvas() {
 function Map() {
   const dispatch = useDispatch();
   const { data } = useSwr("covid", async () => {
-    const response = await fetch('https://gist.githubusercontent.com/leighhalliday/a994915d8050e90d413515e97babd3b3/raw/a3eaaadcc784168e3845a98931780bd60afb362f/covid19.json'); // eslint-disable-line
-    const data = await response.json();
-    return data;
+    const response = await fetch('./dataset.json'); // eslint-disable-line
+    const data = await response.json(); return data;
 });
 
 React.useEffect(() => {
   if (data) {
     dispatch(addDataToMap({
-      datasets: {info: {label: 'COVID-19', id: 'covid19'}, data},
-      option: {centerMap: true, readOnly: false},
-      config: {}
+      datasets: {
+        info: {
+          label: 'DGFiP facilities accessibility',
+          id: 'DGFiP_facilities_accessibility',
+        },
+        data: data
+      },
+      option: {
+        centerMap: true,
+        readOnly: true,
+      },
+      'config': {
+        'visState': {
+          'filters': [],
+          'layers': [{
+            'id': 'tjrbwr',
+            'type': 'grid',
+            'config': {
+              'dataId': 'DGFiP_facilities_accessibility',
+              'label': 'DGFiP facilities accessibility',
+              'color': [201, 23, 23],
+              'highlightColor': [252, 242, 26, 255],
+              'columns': {'lat': 'latitude', 'lng': 'longitude'},
+              'isVisible': true,
+              'visConfig': {
+                'opacity': 1,
+                'colorBasedOn': 'distance',
+                'worldUnitSize': 10,
+                'colorRange': {
+                  'name': 'Uber Viz Sequential 4',
+                  'type': 'sequential',
+                  'category': 'Uber',
+                  'colors': [
+                    '#E6FAFA', '#C1E5E6', '#9DD0D4', '#75BBC1', '#4BA7AF',
+                    '#00939C'
+                  ]
+                },
+                'coverage': 1,
+                'sizeRange': [0, 1000],
+                'percentile': [0, 100],
+                'elevationPercentile': [0, 100],
+                'elevationScale': 51.8,
+                'enableElevationZoomFactor': true,
+                'colorAggregation': 'average',
+                'sizeAggregation': 'average',
+                'enable3d': true
+              },
+              'hidden': false,
+              'textLabel': [{
+                'field': null,
+                'color': [255, 255, 255],
+                'size': 18,
+                'offset': [0, 0],
+                'anchor': 'start',
+                'alignment': 'center'
+              }]
+            },
+            'visualChannels': {
+              'colorField': {'name': 'distance', 'type': 'real'},
+              'colorScale': 'quantile',
+              'sizeField': {'name': 'distance', 'type': 'real'},
+              'sizeScale': 'linear'
+            }
+          }],
+          'interactionConfig': {
+            'tooltip': {
+              'fieldsToShow': {
+                'DGFiP_facilities_accessibility':
+                    [{'name': 'distance', 'format': null}]
+              },
+              'compareMode': false,
+              'compareType': 'absolute',
+              'enabled': true
+            },
+            'brush': {'size': 0.5, 'enabled': false},
+            'geocoder': {'enabled': false},
+            'coordinate': {'enabled': false}
+          },
+          'layerBlending': 'normal',
+          'splitMaps': [],
+          'animationConfig': {'currentTime': null, 'speed': 1}
+        },
+        'mapState': {
+          'bearing': 0,
+          'dragRotate': false,
+          'latitude': 44.90814283852575,
+          'longitude': -5.612759304869703,
+          'pitch': 0,
+          'zoom': 4.398639536903051,
+          'isSplit': false
+        },
+        'mapStyle': {
+          'styleType': 'dark',
+          'topLayerGroups': {},
+          'visibleLayerGroups': {
+            'label': true,
+            'road': true,
+            'border': false,
+            'building': true,
+            'water': true,
+            'land': true,
+            '3d building': false
+          },
+          'threeDBuildingColor':
+              [9.665468314072013, 17.18305478057247, 31.1442867897876],
+          'mapStyles': {}
+        }
+      }
     }));
   }
 }, [dispatch, data]);
