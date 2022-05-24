@@ -43,7 +43,7 @@ function Map() {
 
 React.useEffect(() => {
   if (data) {
-    dispatch(addDataToMap({
+    const dataset_1 = {
       datasets: {
         info: {
           label: 'DGFiP facilities accessibility',
@@ -55,6 +55,19 @@ React.useEffect(() => {
         centerMap: true,
         readOnly: true,
       },
+    };
+    const dataset_2 = {
+      version: 'v1',
+      data: {
+        label: 'DGFiP facilities accessibility',
+        id: 'DGFiP_facilities_accessibility',
+        data: dataset_1.datasets.data,
+        allData: dataset_1.datasets.data.rows,
+        fields: dataset_1.datasets.data.fields,
+      },
+    };
+    const config = {
+      'version': 'v1',
       'config': {
         'visState': {
           'filters': [],
@@ -152,7 +165,10 @@ React.useEffect(() => {
           'mapStyles': {}
         }
       }
-    }));
+    };
+    const mapToLoad = KeplerGlSchema.load([dataset_2], config);
+    console.log(mapToLoad);
+    dispatch(addDataToMap(mapToLoad));
   }
 }, [dispatch, data]);
 
